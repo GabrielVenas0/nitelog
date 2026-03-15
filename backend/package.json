@@ -1,0 +1,10 @@
+{
+  "name": "backend",
+  "private": true,
+  "scripts": {
+    "dev": "go run cmd/api/main.go"
+  },
+  "dependencies": {
+    "pnpm": "^10.30.3"
+  }
+}

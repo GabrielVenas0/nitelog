@@ -1,0 +1,13 @@
+{
+  "name": "nitelog",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r --parallel build",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:backend": "pnpm --filter backend dev"
+  },
+  "dependencies": {
+    "pnpm": "^10.30.3"
+  }
+}

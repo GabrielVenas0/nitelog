@@ -16,13 +16,15 @@ func main() {
 		return
 	}
 
+	handler.SeedAdmin()
+
 	router := http.NewServeMux()
 
 	router.HandleFunc("/auth/register", handler.Register)
 	router.HandleFunc("/auth/login", handler.Login)
 	router.HandleFunc("/auth/logout", handler.Logout)
 	
-	router.HandleFunc("/auth/me", middleware.AuthMiddleware(handler.GetMe))
+	router.HandleFunc("GET /auth/me", middleware.AuthMiddleware(handler.GetMe))
 
 	router.HandleFunc("POST /projects", middleware.AuthMiddleware(handler.CreateProject))
 	router.HandleFunc("GET /projects", middleware.AuthMiddleware(handler.ListProject))

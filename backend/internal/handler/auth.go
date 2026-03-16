@@ -13,6 +13,21 @@ import (
 
 var usersDB = []models.User{}
 
+func SeedAdmin() {
+	senhaHash, err := utils.HashPassword("admin")
+	if err != nil {
+		log.Print("Erro ao gerar hashPassword.")
+	}
+	admin := models.User{
+		ID: "admin-123",
+		Username: "admin",
+		Password: string(senhaHash),
+	}
+
+	usersDB = append(usersDB, admin)
+	log.Println("Entrou como Admin!")
+}
+
 func Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

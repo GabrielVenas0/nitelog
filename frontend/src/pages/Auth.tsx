@@ -1,8 +1,10 @@
-import { LoginApi } from '@/api/auth'
+import { GetMeApi, LoginApi } from '@/api/auth'
+import { useAuth } from '@/hooks/auth'
 import { useNavigate } from 'react-router-dom'
 
 export function Auth() {
   const navigate = useNavigate()
+  const { setUser } = useAuth()
 
   async function submit(formData: FormData) {
     const username = formData.get('username')
@@ -10,9 +12,12 @@ export function Auth() {
 
     try {
       await LoginApi({ username, password })
-      // navigate('/foryou')
+      const userData = await GetMeApi()
+      setUser(userData)
+      navigate('/foryou')
     } catch (error) {
       console.error('Erro no login: ', error)
+      alert('Credenciais inválidas!')
     }
   }
 

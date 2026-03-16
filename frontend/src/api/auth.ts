@@ -8,12 +8,6 @@ interface LoginApiProps {
   password: FormDataEntryValue | null
 }
 
-export async function GetMeApi() {
-  return instance.get('auth/me', {}).then((response) => {
-    return response.data
-  })
-}
-
 export async function LoginApi({ username: u, password: p }: LoginApiProps) {
   return instance
     .post('/auth/login', {
@@ -21,7 +15,12 @@ export async function LoginApi({ username: u, password: p }: LoginApiProps) {
       password: p,
     })
     .then((response) => {
-      console.log(response.data)
-      console.log(response)
+      return response.data
     })
+}
+
+export async function GetMeApi() {
+  return instance.get('/auth/me', {}).then((response) => {
+    return response.data
+  })
 }

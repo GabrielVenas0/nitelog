@@ -1,12 +1,14 @@
+import axios from 'axios'
 import { API_URL } from './client'
 
-export async function getProjects() {
-  const response = await fetch(`${API_URL}/projects`)
+const instance = axios.create({ baseURL: API_URL, withCredentials: true })
 
-  if (!response.ok) {
-    throw new Error('Erro ao buscar os projetos')
-  }
+export async function GetProjects(signal: AbortSignal) {
+  const response = await instance.get('/projects', { signal })
+  return response.data
+}
 
-  const data = await response.json()
-  return data
+export async function CreateProjectApi(name: FormDataEntryValue | null) {
+  const response = await instance.post('/projects', { name: name })
+  return response.data
 }

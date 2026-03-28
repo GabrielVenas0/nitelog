@@ -9,18 +9,14 @@ interface LoginApiProps {
 }
 
 export async function LoginApi({ username: u, password: p }: LoginApiProps) {
-  return instance
-    .post('/auth/login', {
-      username: u,
-      password: p,
-    })
-    .then((response) => {
-      return response.data
-    })
+  const response = await instance.post('/auth/login', {
+    username: u,
+    password: p,
+  })
+  return response.data
 }
 
 export async function GetMeApi() {
-  return instance.get('/auth/me', {}).then((response) => {
-    return response.data
-  })
+  const response = await instance.get('/auth/me', {})
+  return response.data
 }

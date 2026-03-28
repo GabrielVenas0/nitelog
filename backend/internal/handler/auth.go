@@ -22,6 +22,7 @@ func SeedAdmin() {
 		ID: "admin-123",
 		Username: "admin",
 		Password: string(senhaHash),
+		Role: "admin",
 	}
 
 	usersDB = append(usersDB, admin)
@@ -127,6 +128,7 @@ func GetMe(w http.ResponseWriter, r *http.Request) {
 			userData := map[string]string{
 				"id": v.ID,
 				"username": v.Username,
+				"role": v.Role,
 			}
 
 			w.WriteHeader(http.StatusOK)

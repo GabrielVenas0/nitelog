@@ -22,6 +22,7 @@ type User struct {
 	Username string
 	Email string
 	Password string
+	Role string
 	Token string
 	CreatedAt time.Time
 	UpdatedAt time.Time

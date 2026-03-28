@@ -8,10 +8,9 @@ export const ProjectCard = ({ ID, Name }: Project) => {
       className='cursor-pointer rounded-md bg-gray-100 p-3 hover:bg-gray-200'
     >
       <div className='flex items-center justify-between'>
-        <h2>{Name}</h2>
+        <h2>Nome: {Name}</h2>
+        <button>Visualizar</button>
       </div>
-
-      <div></div>
     </Link>
   )
 }

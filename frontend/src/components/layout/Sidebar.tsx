@@ -3,7 +3,7 @@ import { Flame, FolderOpen } from 'lucide-react'
 
 export const Sidebar = () => {
   return (
-    <div className='flex h-full w-60 flex-col border-r border-gray-300'>
+    <aside className='flex h-full w-60 flex-col border-r border-gray-300'>
       <nav className='flex flex-col gap-2 p-2'>
         <Navlink to='/foryou'>
           <Flame className='h-5 w-5' />
@@ -14,6 +14,6 @@ export const Sidebar = () => {
           Projetos
         </Navlink>
       </nav>
-    </div>
+    </aside>
   )
 }

@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom'
 
 export const Header = () => {
   return (
-    <div className='flex h-12 w-full justify-between px-4'>
+    <header className='flex h-12 w-full justify-between px-4'>
       {/* LEFT */}
       <div className='flex w-56 items-center justify-between border-r border-gray-300'>
         <div className='flex cursor-pointer items-center gap-2'>
@@ -29,10 +29,13 @@ export const Header = () => {
           <Search className='w-4' />
           Pesquisar
         </div>
-        <button className='flex items-center rounded-md bg-blue-500 px-3 py-1 text-white'>
+        <a
+          href='/projects/new'
+          className='flex items-center rounded-md bg-blue-500 px-3 py-1 text-white'
+        >
           <Plus className='w-4' />
           <p className='text-sm font-semibold'>Criar</p>
-        </button>
+        </a>
       </div>
 
       {/* RIGHT */}
@@ -41,6 +44,6 @@ export const Header = () => {
         <Settings />
         <User />
       </div>
-    </div>
+    </header>
   )
 }

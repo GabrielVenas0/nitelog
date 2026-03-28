@@ -1,4 +1,5 @@
 import { GetMeApi, LoginApi } from '@/api/auth'
+import { Button, Input } from '@/components/ui'
 import { useAuth } from '@/hooks/auth'
 import { useNavigate } from 'react-router-dom'
 
@@ -26,31 +27,19 @@ export function Auth() {
       <div className='flex flex-col rounded-sm border border-gray-300 p-6'>
         <form action={submit} className='flex flex-col gap-4'>
           <h1 className='text-center text-2xl'>Login</h1>
-          <input
+          <Input
             type='text'
             name='username'
             placeholder='Usuário ou Email'
-            className='border-sm border-b border-gray-300 px-2 py-1 transition-colors duration-500 outline-none'
             required
           />
-          <input
-            type='password'
-            name='password'
-            placeholder='Senha'
-            className='border-sm border-b border-gray-300 px-2 py-1 transition-colors duration-500 outline-none'
-            required
-          />
+          <Input type='password' name='password' placeholder='Senha' required />
 
           <p>
             Não possuí uma conta? <a href='/register'>Registre-se</a>
           </p>
 
-          <button
-            type='submit'
-            className='cursor-pointer rounded-sm bg-blue-400 py-2 text-white transition-colors duration-500 hover:bg-blue-500'
-          >
-            Entrar
-          </button>
+          <Button type='submit'>Entrar</Button>
         </form>
       </div>
     </div>

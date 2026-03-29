@@ -1,0 +1,12 @@
+services:
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5453:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_POSTGRES}
+
+    volumes:
+      - "./.docker/db-data:/var/lib/postgres/data"

@@ -1,9 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Layout } from '@/components/layout'
 import { Projects, ForYou, ProjectView, Auth } from '@/pages'
-import { AuthProvider } from './context/AuthProvider'
-import { ProtectedRoute } from './components/routes/ProtectedRoute'
-import { CreateModal } from './components/ui'
+import { Layout, ProtectedRoute, CreateModal } from '@/components'
+import { AuthProvider } from '@/context'
 
 export default function App() {
   return (
@@ -17,7 +15,7 @@ export default function App() {
               <Route path='/foryou' element={<ForYou />}></Route>
               <Route path='/projects' element={<Projects />}></Route>
               <Route path='/projects/:id' element={<ProjectView />}></Route>
-              <Route path='/projects/new' element={<CreateModal />}></Route>
+              <Route path='/create' element={<CreateModal />}></Route>
             </Route>
           </Route>
         </Routes>

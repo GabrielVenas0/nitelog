@@ -30,7 +30,7 @@ export const Header = () => {
           Pesquisar
         </div>
         <a
-          href='/projects/new'
+          href='/create'
           className='flex items-center rounded-md bg-blue-500 px-3 py-1 text-white'
         >
           <Plus className='w-4' />

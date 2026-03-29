@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { GetProjects } from '@/api'
 import type { Project } from '@/types'
-import { ProjectCard } from '@/components/ui'
+import { ProjectCard } from '@/components'
 import { isCancel } from 'axios'
 
 export function Projects() {

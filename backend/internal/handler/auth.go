@@ -1,112 +1,126 @@
 package handler
 
 import (
-	"backend/internal/models"
+	"backend/internal/database"
 	"backend/internal/utils"
 	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 )
 
-var usersDB = []models.User{}
-
-func SeedAdmin() {
-	senhaHash, err := utils.HashPassword("admin")
-	if err != nil {
-		log.Print("Erro ao gerar hashPassword.")
-	}
-	admin := models.User{
-		ID: "admin-123",
-		Username: "admin",
-		Password: string(senhaHash),
-		Role: "admin",
-	}
-
-	usersDB = append(usersDB, admin)
-	log.Println("Entrou como Admin!")
+type userReq struct {
+	Username string `json:"username"`
+	Email string `json:"email"`
+	Password string `json:"password"`
 }
 
-func Register(w http.ResponseWriter, r *http.Request) {
+type userRes struct {
+	ID string `json:"id"`
+	Username string `json:"username"`
+	Email string `json:"email"`
+}
+
+
+func (api *ApiConfig) Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	
+	var req userReq
 
-	var u models.User
-
-	err := json.NewDecoder(r.Body).Decode(&u)
-
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if len(u.Username) < 6 || len(u.Password) < 6 {
-		respondWithError(w, http.StatusBadRequest , "Credencias inválidas")
+	if len(req.Password) < 6 || len(req.Password) > 24 {
+		respondWithError(w, http.StatusBadRequest, "A senha deve ter entre 6 e 24 caracteres.")
 		return
 	}
 
-	for _, v := range usersDB {
-		if v.Username == u.Username {
-			respondWithError(w, http.StatusConflict, "Este nome de usuário já existe")
-			return
+	hashedPass, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Foi aqui")
+		return
+	}
+
+	params := database.CreateUserParams{
+		Username: req.Username,
+		Email: req.Email,
+		PasswordHash: string(hashedPass),
+		Role: "Membro",
+	}
+
+	user, err := api.DB.CreateUser(r.Context(), params)
+	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok {
+			if pqErr.Code == "23505" {
+				respondWithError(w, http.StatusConflict, "Este nome de usuário ou e-mail já está em uso.")
+				return
+			}
 		}
-	}
-
-	u.ID = uuid.New().String()
-	u.Password, err = utils.HashPassword(u.Password)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("ERRO REAL DO POSTGRES: %v\n", err)
+		respondWithError(w, http.StatusInternalServerError, "Não, Foi aqui")
 		return
 	}
 
-	token, err := utils.GenerateToken(u.ID)
+	token, err := utils.GenerateToken(user.ID.String())
 	if err != nil {
-		log.Println("Erro ao gerar o token")
+		respondWithError(w, http.StatusInternalServerError, "Erro ao gerar autenticação.")
 		return
 	}
 
 	cookie := utils.GenerateAuthCookie(token)
 	http.SetCookie(w, cookie)
-	
-	usersDB = append(usersDB, u)
 
 	w.WriteHeader(http.StatusCreated)
+
+	res := userRes{
+		ID: user.ID.String(),
+		Username: user.Username,
+		Email: user.Email,
+	}
+
+	json.NewEncoder(w).Encode(res)
 }
 
-func Login(w http.ResponseWriter, r *http.Request) {
+func (api *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	var u models.User
+	var req userReq
 
-	err := json.NewDecoder(r.Body).Decode(&u)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	for _, v := range usersDB {
-		if v.Username == u.Username {
-			err := bcrypt.CompareHashAndPassword([]byte(v.Password), []byte(u.Password))
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusForbidden)
-				return
-			} 
-
-			token, err := utils.GenerateToken(v.ID)
-			if err != nil {
-				log.Println("Erro ao gerar token")
-			}
-
-			cookie := utils.GenerateAuthCookie(token)
-
-			http.SetCookie(w, cookie)
-		
-			w.WriteHeader(http.StatusOK)
-			return
-		}
+	user, err := api.DB.GetUserByUsername(r.Context(), req.Username) 
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Credenciais inválidas.")
+		return
 	}
-	respondWithError(w, http.StatusUnauthorized, "Credenciais inválidas")
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password))
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Credenciais inválidas.")
+		return
+	}
+
+	token, err := utils.GenerateToken(user.ID.String())
+	if err != nil {
+		log.Println("Erro ao gerar token")
+		return
+	}
+
+	cookie := utils.GenerateAuthCookie(token)
+
+	http.SetCookie(w, cookie)
+		
+	w.WriteHeader(http.StatusOK)
 }
 
 func Logout(w http.ResponseWriter, _ *http.Request) {
@@ -116,29 +130,32 @@ func Logout(w http.ResponseWriter, _ *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func GetMe(w http.ResponseWriter, r *http.Request) {
+func (api *ApiConfig) GetMe(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok {
 		respondWithError(w, http.StatusInternalServerError, "Erro interno: usuário não identificado no contexto")
 		return
 	}
 
-	for _, v := range usersDB {
-		if v.ID == userID {
-			userData := map[string]string{
-				"id": v.ID,
-				"username": v.Username,
-				"role": v.Role,
-			}
+	userUUID, err := uuid.Parse(userID)
+  if err != nil {
+    respondWithError(w, http.StatusBadRequest, "ID de usuário inválido")
+    return
+  }
 
-			w.WriteHeader(http.StatusOK)
-			err := json.NewEncoder(w).Encode(userData)
-			if err != nil {
-				respondWithError(w, http.StatusInternalServerError, "asfdf")
-				return
-			}
-			return
-		}
+	user, err := api.DB.GetUserByID(r.Context(), userUUID)
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "Usuário não encontrado")
+		return
 	}
-	w.WriteHeader(http.StatusNotFound)
+
+	w.WriteHeader(http.StatusOK)
+
+	res := userRes{
+		ID: user.ID.String(),
+		Username: user.Username,
+		Email: user.Email,
+	}
+
+	json.NewEncoder(w).Encode(res)
 }

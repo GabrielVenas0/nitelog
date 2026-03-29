@@ -1,9 +1,9 @@
 import { GetMeApi, LoginApi } from '@/api/auth'
 import { Button, Input } from '@/components/ui'
 import { useAuth } from '@/hooks/auth'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
-export function Auth() {
+export function Login() {
   const navigate = useNavigate()
   const { setUser } = useAuth()
 
@@ -36,7 +36,7 @@ export function Auth() {
           <Input type='password' name='password' placeholder='Senha' required />
 
           <p>
-            Não possuí uma conta? <a href='/register'>Registre-se</a>
+            Não possuí uma conta? <Link to='/register'>Registre-se</Link>
           </p>
 
           <Button type='submit'>Entrar</Button>

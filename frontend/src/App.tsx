@@ -3,7 +3,7 @@ import {
   Projects,
   ForYou,
   ProjectView,
-  Auth,
+  Login,
   Register,
   NotFound,
 } from '@/pages'
@@ -15,7 +15,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path='/login' element={<Auth />}></Route>
+          <Route path='/login' element={<Login />}></Route>
           <Route path='/register' element={<Register />}></Route>
 
           <Route element={<ProtectedRoute />}>

@@ -1,14 +1,37 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks'
-import { CreateProjectApi } from '@/api'
-import { Select, Button, Input } from '@/components/ui'
+import { CreateProjectApi, CreateTaskApi, GetProjects } from '@/api'
+import { Select, Button, Input } from '@/components'
+import type { Project } from '@/types'
+import { isCancel } from 'axios'
 
 export function CreateModal() {
   const [itemType, setItemType] = useState('task')
+  const [projects, setProjects] = useState<Project[]>([])
   const { user } = useAuth()
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const controller = new AbortController()
+    async function loadProjects() {
+      try {
+        const projectData = await GetProjects(controller.signal)
+        setProjects(projectData || [])
+      } catch (error) {
+        if (isCancel(error)) {
+          return
+        }
+        console.error('[GetProjects] Erro no CreateModal: ', error)
+      }
+    }
+    loadProjects()
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
 
   async function submit(formData: FormData) {
     if (itemType === 'project') {
@@ -18,10 +41,16 @@ export function CreateModal() {
         await CreateProjectApi(name)
         navigate('/projects')
       } catch (error) {
-        console.error('Erro no CreateModal: ', error)
+        console.error('[CreateProject] Erro no CreateModal: ', error)
       }
     } else {
-      console.log('Tentativa de criar tarefa.')
+      const projectId = formData.get('project') as string
+      const name = formData.get('taskname')
+      try {
+        await CreateTaskApi(projectId, name)
+      } catch (error) {
+        console.error('[CreateTask] Erro no CreateModal', error)
+      }
     }
   }
 
@@ -51,7 +80,31 @@ export function CreateModal() {
           {itemType === 'project' ? (
             <Input name='projectname' label='Nome do Projeto' required />
           ) : (
-            <h1>Formulário de tarefa em andamento...</h1>
+            <div>
+              <Select name='project' label='Projeto' required>
+                {projects.length === 0 ? (
+                  <option value=''>Sem projetos</option>
+                ) : (
+                  <optgroup key={'optGroup'}>
+                    {projects.map((p) => (
+                      <option key={p.ID} value={p.ID}>
+                        {p.Name}
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+              </Select>
+              <Input name='taskname' label='Nome da tarefa' required></Input>
+              {/* <Input
+                name='taskdesc'
+                label='Descrição da tarefa'
+                required
+              ></Input>
+              <Select name='assignee' label='Responsável'>
+                <option value='temp1'></option>
+                <option value='temp2'>Gabriel Venas</option>
+              </Select> */}
+            </div>
           )}
           <Button type='submit'>Concluir</Button>
         </form>

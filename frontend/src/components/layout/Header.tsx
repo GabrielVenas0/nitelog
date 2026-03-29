@@ -29,13 +29,13 @@ export const Header = () => {
           <Search className='w-4' />
           Pesquisar
         </div>
-        <a
-          href='/create'
+        <Link
+          to='/create'
           className='flex items-center rounded-md bg-blue-500 px-3 py-1 text-white'
         >
           <Plus className='w-4' />
           <p className='text-sm font-semibold'>Criar</p>
-        </a>
+        </Link>
       </div>
 
       {/* RIGHT */}

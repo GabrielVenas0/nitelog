@@ -8,8 +8,12 @@ import {
   User,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { Button } from '../ui'
+import { useModal } from '@/hooks'
 
 export const Header = () => {
+  const openModal = useModal((state) => state.openModal)
+
   return (
     <header className='flex h-12 w-full justify-between px-4'>
       {/* LEFT */}
@@ -29,13 +33,10 @@ export const Header = () => {
           <Search className='w-4' />
           Pesquisar
         </div>
-        <Link
-          to='/create'
-          className='flex items-center rounded-md bg-blue-500 px-3 py-1 text-white'
-        >
-          <Plus className='w-4' />
-          <p className='text-sm font-semibold'>Criar</p>
-        </Link>
+        <Button onClick={openModal}>
+          <Plus className='w-4'></Plus>
+          Criar
+        </Button>
       </div>
 
       {/* RIGHT */}

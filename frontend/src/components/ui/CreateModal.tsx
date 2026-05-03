@@ -1,18 +1,32 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks'
 import { CreateProjectApi, CreateTaskApi, GetProjects } from '@/api'
-import { Select, Button, Input } from '@/components'
+import { Select, Button, Input, CloseButton } from '@/components'
 import type { Project } from '@/types'
 import { isCancel } from 'axios'
+import { useModal } from '@/hooks'
 
 export function CreateModal() {
+  const isOpen = useModal((state) => state.isOpen)
+  const closeModal = useModal((state) => state.closeModal)
+
   const [itemType, setItemType] = useState('task')
   const [projects, setProjects] = useState<Project[]>([])
   const { user } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
+    if (!isOpen) return
+
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        closeModal()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeydown)
+
     const controller = new AbortController()
     async function loadProjects() {
       try {
@@ -28,11 +42,17 @@ export function CreateModal() {
     loadProjects()
 
     return () => {
+      document.removeEventListener('keydown', handleKeydown);
       controller.abort()
     }
-  }, [])
+  }, [isOpen, closeModal])
 
-  async function submit(formData: FormData) {
+
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    const formData = new FormData(e.currentTarget)
+
     if (itemType === 'project') {
       const name = formData.get('projectname')
 
@@ -47,24 +67,25 @@ export function CreateModal() {
       const name = formData.get('taskname')
       try {
         await CreateTaskApi(projectId, name)
+        closeModal()
       } catch (error) {
         console.error('[CreateTask] Erro no CreateModal', error)
       }
     }
   }
 
+  if (!isOpen) return null
+
   return (
-    <div className='flex h-screen items-center justify-center'>
-      <div className='flex w-md flex-col gap-2 px-6 py-4'>
+    <div className='flex h-screen fixed inset-0 z-50 bg-black/50 items-center justify-center' onClick={closeModal}>
+      <div className='flex w-md flex-col gap-2 px-6 py-4 bg-white rounded-sm' onClick={(e) => e.stopPropagation()}>
         <div className='flex justify-between gap-2'>
           <h1 className='text-2xl'>
             {itemType === 'project' ? 'Criar Projeto' : 'Criar Tarefa'}
           </h1>
-          <button className='px-2 text-lg font-semibold hover:bg-gray-300'>
-            X
-          </button>
+          <CloseButton></CloseButton>
         </div>
-        <form action={submit} className='flex flex-col gap-2'>
+        <form onSubmit={submit} className='flex flex-col gap-2'>
           <Select
             name='itemType'
             label='Tipo do Ticket'

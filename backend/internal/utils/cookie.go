@@ -21,6 +21,7 @@ func GenerateLogoutCookie() *http.Cookie {
 		Name: "session_token",
 		Path: "/",
 		MaxAge: -1,
+		Secure: false,
 		HttpOnly: true,
 	}
 	return (&cookie)

@@ -32,7 +32,6 @@ func main() {
 	router.HandleFunc("POST /auth/register", api.Register)
 	router.HandleFunc("POST /auth/login", api.Login)
 	router.HandleFunc("POST /auth/logout", middleware.AuthMiddleware(handler.Logout))
-	
 	router.HandleFunc("GET /auth/me", middleware.AuthMiddleware(api.GetMe))
 
 	router.HandleFunc("POST /projects", middleware.AuthMiddleware(api.CreateProject))

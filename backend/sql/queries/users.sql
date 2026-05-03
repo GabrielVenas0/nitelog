@@ -10,3 +10,7 @@ WHERE id = $1;
 SELECT id, username, email, password_hash, role
 FROM users
 WHERE username = $1;
+-- name: SeedUser :exec
+INSERT INTO users (username, email, password_hash, role)
+VALUES($1, $2, $3, $4)
+ON CONFLICT (email) DO NOTHING;

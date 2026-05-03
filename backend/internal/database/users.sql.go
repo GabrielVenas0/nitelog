@@ -95,3 +95,26 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (GetUs
 	)
 	return i, err
 }
+
+const seedUser = `-- name: SeedUser :exec
+INSERT INTO users (username, email, password_hash, role)
+VALUES($1, $2, $3, $4)
+ON CONFLICT (email) DO NOTHING
+`
+
+type SeedUserParams struct {
+	Username     string `json:"username"`
+	Email        string `json:"email"`
+	PasswordHash string `json:"password_hash"`
+	Role         string `json:"role"`
+}
+
+func (q *Queries) SeedUser(ctx context.Context, arg SeedUserParams) error {
+	_, err := q.db.ExecContext(ctx, seedUser,
+		arg.Username,
+		arg.Email,
+		arg.PasswordHash,
+		arg.Role,
+	)
+	return err
+}

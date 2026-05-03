@@ -3,6 +3,7 @@ package handler
 import (
 	"backend/internal/database"
 	"backend/internal/utils"
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -19,9 +20,34 @@ type userReq struct {
 }
 
 type userRes struct {
-	ID string `json:"id"`
-	Username string `json:"username"`
-	Email string `json:"email"`
+  ID       string `json:"id"`
+  Username string `json:"username"`
+  Email    string `json:"email"`
+  Role     string `json:"role"`
+}
+
+
+func (api *ApiConfig) SeedUsers() {
+	hashedPass, err := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
+	if err != nil {
+		log.Printf("failed to generate bcrypt from password.")
+		return
+	}
+
+	params := database.SeedUserParams {
+		Username: "admin",
+		Email: "admin@admin.com",
+		PasswordHash: string(hashedPass),
+		Role: "Admin",
+	}
+
+	ctx := context.Background()
+
+	err = api.DB.SeedUser(ctx, params)
+	if err != nil {
+		log.Printf("failed to seed user: %v.", err)
+		return 
+	}
 }
 
 
@@ -79,9 +105,10 @@ func (api *ApiConfig) Register(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	res := userRes{
-		ID: user.ID.String(),
-		Username: user.Username,
-		Email: user.Email,
+  	ID:       user.ID.String(),
+  	Username: user.Username,
+  	Email:    user.Email,
+  	Role:     user.Role,
 	}
 
 	json.NewEncoder(w).Encode(res)
@@ -152,9 +179,10 @@ func (api *ApiConfig) GetMe(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	res := userRes{
-		ID: user.ID.String(),
-		Username: user.Username,
-		Email: user.Email,
+  	ID:       user.ID.String(),
+  	Username: user.Username,
+  	Email:    user.Email,
+  	Role:     user.Role,
 	}
 
 	json.NewEncoder(w).Encode(res)

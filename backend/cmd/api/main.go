@@ -19,13 +19,13 @@ func main() {
 
 	db := database.Connect()
 	defer db.Close()
-
 	queries := database.New(db)
 
 	api := handler.ApiConfig{
 		DB: queries,
 	}
 
+	api.SeedUsers()
 
 	router := http.NewServeMux()
 
@@ -35,13 +35,14 @@ func main() {
 	
 	router.HandleFunc("GET /auth/me", middleware.AuthMiddleware(api.GetMe))
 
-	// router.HandleFunc("POST /projects", middleware.AuthMiddleware(handler.CreateProject))
-	// router.HandleFunc("GET /projects", middleware.AuthMiddleware(handler.ListProject))
-	// router.HandleFunc("GET /projects/{id}", middleware.AuthMiddleware(handler.GetProject))
+	router.HandleFunc("POST /projects", middleware.AuthMiddleware(api.CreateProject))
+	router.HandleFunc("GET /projects", middleware.AuthMiddleware(api.ListProject))
+	router.HandleFunc("GET /projects/{id}", middleware.AuthMiddleware(api.GetProjectByID))
 	// router.HandleFunc("DELETE /projects/{id}", middleware.AuthMiddleware(handler.DeleteProject))
 	
-	// router.HandleFunc("POST /projects/{project_id}/tasks", middleware.AuthMiddleware(handler.CreateTask))
-	// router.HandleFunc("GET /projects/{project_id}/tasks", middleware.AuthMiddleware(handler.ListTask))
+	router.HandleFunc("POST /projects/{project_id}/tasks", middleware.AuthMiddleware(api.CreateTask))
+	router.HandleFunc("GET /projects/{project_id}/tasks", middleware.AuthMiddleware(api.ListProjectTasks))
+	
 	// router.HandleFunc("DELETE /projects/{project_id}/tasks/{task_id}", middleware.AuthMiddleware(handler.DeleteTask))
 
 	router.HandleFunc("/health", handler.HealthCheck)

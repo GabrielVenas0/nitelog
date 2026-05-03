@@ -1,5 +1,6 @@
 export interface Task {
-  ID: string
-  Name: string
-  ProjectID: string
+  id: string
+  name: string
+  creator_id: string
+  status: string
 }

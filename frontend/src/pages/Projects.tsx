@@ -44,7 +44,7 @@ export function Projects() {
       ) : (
         <div className='grid grid-cols-6 gap-4'>
           {projects.map((p) => (
-            <ProjectCard ID={p.ID} Name={p.Name} key={p.ID}></ProjectCard>
+            <ProjectCard id={p.id} name={p.name} key={p.id} owner_id={p.owner_id}></ProjectCard>
           ))}
         </div>
       )}

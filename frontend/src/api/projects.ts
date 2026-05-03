@@ -8,6 +8,11 @@ export async function GetProjects(signal: AbortSignal) {
   return response.data
 }
 
+export async function GetProjectById(project_id: string) {
+  const response = await instance.get(`/projects/${project_id}`)
+  return response.data
+}
+
 export async function CreateProjectApi(name: FormDataEntryValue | null) {
   const response = await instance.post('/projects', { name: name })
   return response.data

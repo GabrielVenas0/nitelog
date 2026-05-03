@@ -10,7 +10,6 @@ export function CreateModal() {
   const [itemType, setItemType] = useState('task')
   const [projects, setProjects] = useState<Project[]>([])
   const { user } = useAuth()
-
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -74,7 +73,7 @@ export function CreateModal() {
             required
           >
             <option value='task'>Tarefa</option>
-            {user?.role === 'admin' && <option value='project'>Projeto</option>}
+            {user?.role === 'Admin' && <option value='project'>Projeto</option>}
           </Select>
 
           {itemType === 'project' ? (
@@ -87,8 +86,8 @@ export function CreateModal() {
                 ) : (
                   <optgroup key={'optGroup'}>
                     {projects.map((p) => (
-                      <option key={p.ID} value={p.ID}>
-                        {p.Name}
+                      <option key={p.id} value={p.id}>
+                        {p.name}
                       </option>
                     ))}
                   </optgroup>

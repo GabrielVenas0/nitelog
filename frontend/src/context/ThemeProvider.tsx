@@ -1,14 +1,15 @@
 import { useState, useEffect} from 'react';
 import { ThemeContext,  type Theme } from '@/types';
-import { Default_Theme } from '../../themes/index';
+import { getDefaultTheme} from '../../themes/index';
 
 import { Get_Storage } from '@/utility';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>( Get_Storage("THEME") ||Default_Theme);
+  const [theme, setTheme] = useState<Theme>( Get_Storage("THEME") || getDefaultTheme());
 
   useEffect(() => {
     const root = document.documentElement;
+    console.log(theme)
     Object.entries(theme.props).forEach(([key, value]) => {
       root.style.setProperty(`--${key}`, value);
     });

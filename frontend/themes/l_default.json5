@@ -1,0 +1,12 @@
+{
+    name: 'Light Default',
+    kind: 'light',
+
+    props: {
+        accent: '#357fec',
+        accentedBg: '#a4f4fff6',
+        fg: '#d7e0e48f',
+        bg: '#e3eaf5',
+        error: '#dd4141'
+    }
+}

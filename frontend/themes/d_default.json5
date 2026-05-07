@@ -1,0 +1,13 @@
+{
+    name: 'Dark Default',
+    kind: 'Dark',
+
+    props: {
+        accent: '#f7fbff',
+        accentedBg: '#94f3fff6',
+        fg: '#131224',
+        bg: '#1a1d29',
+        error: '#dd4141'
+
+    }
+}

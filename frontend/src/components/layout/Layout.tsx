@@ -5,7 +5,7 @@ import { CreateModal } from '../ui'
 
 export function Layout() {
   return (
-    <div className='flex h-screen w-full flex-col overflow-hidden bg-white text-gray-800'>
+    <div className='flex h-screen w-full flex-col overflow-hidden bg-(--bg) text-gray-800 transition-colors'>
       <Header />
 
       <div className='flex flex-1 overflow-hidden'>

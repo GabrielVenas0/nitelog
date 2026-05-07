@@ -1,10 +1,10 @@
 package middleware
 
 import (
+	. "backend/env"
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -17,13 +17,13 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
-	
+
 		tokenString := cookie.Value
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("Método de assinatura inesperado: %v", token.Header["alg"])
 			}
-			return []byte(os.Getenv("JWT_SECRET")), nil
+			return []byte(ENV.GetKey("JWT_SECRET")), nil
 		})
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)

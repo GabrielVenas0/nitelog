@@ -3,19 +3,12 @@ package main
 import (
 	"backend/internal/database"
 	"backend/internal/handler"
-	"backend/internal/middleware"
+	. "backend/internal/middleware"
 	"log"
 	"net/http"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Erro ao carregar o .env")
-		return
-	}
 
 	db := database.Connect()
 	defer db.Close()
@@ -31,20 +24,20 @@ func main() {
 
 	router.HandleFunc("POST /auth/register", api.Register)
 	router.HandleFunc("POST /auth/login", api.Login)
-	router.HandleFunc("POST /auth/logout", middleware.AuthMiddleware(handler.Logout))
-	router.HandleFunc("GET /auth/me", middleware.AuthMiddleware(api.GetMe))
+	router.HandleFunc("POST /auth/logout", AuthMiddleware(handler.Logout))
+	router.HandleFunc("GET /auth/me", AuthMiddleware(api.GetMe))
 
-	router.HandleFunc("POST /projects", middleware.AuthMiddleware(api.CreateProject))
-	router.HandleFunc("GET /projects", middleware.AuthMiddleware(api.ListProject))
-	router.HandleFunc("GET /projects/{id}", middleware.AuthMiddleware(api.GetProjectByID))
-	// router.HandleFunc("DELETE /projects/{id}", middleware.AuthMiddleware(handler.DeleteProject))
-	
-	router.HandleFunc("POST /projects/{project_id}/tasks", middleware.AuthMiddleware(api.CreateTask))
-	router.HandleFunc("GET /projects/{project_id}/tasks", middleware.AuthMiddleware(api.ListProjectTasks))
-	
+	router.HandleFunc("POST /projects", AuthMiddleware(api.CreateProject))
+	router.HandleFunc("GET /projects", AuthMiddleware(api.ListProject))
+	router.HandleFunc("GET /projects/{id}", AuthMiddleware(api.GetProjectByID))
+	// router.HandleFunc("DELETE /projects/{id}",AuthMiddleware(handler.DeleteProject))
+
+	router.HandleFunc("POST /projects/{project_id}/tasks", AuthMiddleware(api.CreateTask))
+	router.HandleFunc("GET /projects/{project_id}/tasks", AuthMiddleware(api.ListProjectTasks))
+
 	// router.HandleFunc("DELETE /projects/{project_id}/tasks/{task_id}", middleware.AuthMiddleware(handler.DeleteTask))
 
 	router.HandleFunc("/health", handler.HealthCheck)
 
-	log.Fatal(http.ListenAndServe(":8080", middleware.EnableCORS(router)))
+	log.Fatal(http.ListenAndServe(":8080", EnableCORS(router)))
 }

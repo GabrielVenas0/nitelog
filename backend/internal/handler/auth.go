@@ -15,17 +15,16 @@ import (
 
 type userReq struct {
 	Username string `json:"username"`
-	Email string `json:"email"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
 type userRes struct {
-  ID       string `json:"id"`
-  Username string `json:"username"`
-  Email    string `json:"email"`
-  Role     string `json:"role"`
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Role     string `json:"role"`
 }
-
 
 func (api *ApiConfig) SeedUsers() {
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
@@ -34,11 +33,11 @@ func (api *ApiConfig) SeedUsers() {
 		return
 	}
 
-	params := database.SeedUserParams {
-		Username: "admin",
-		Email: "admin@admin.com",
+	params := database.SeedUserParams{
+		Username:     "admin",
+		Email:        "admin@admin.com",
 		PasswordHash: string(hashedPass),
-		Role: "Admin",
+		Role:         "Admin",
 	}
 
 	ctx := context.Background()
@@ -46,14 +45,13 @@ func (api *ApiConfig) SeedUsers() {
 	err = api.DB.SeedUser(ctx, params)
 	if err != nil {
 		log.Printf("failed to seed user: %v.", err)
-		return 
+		return
 	}
 }
 
-
 func (api *ApiConfig) Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	
+
 	var req userReq
 
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -74,10 +72,10 @@ func (api *ApiConfig) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	params := database.CreateUserParams{
-		Username: req.Username,
-		Email: req.Email,
+		Username:     req.Username,
+		Email:        req.Email,
 		PasswordHash: string(hashedPass),
-		Role: "Membro",
+		Role:         "Membro",
 	}
 
 	user, err := api.DB.CreateUser(r.Context(), params)
@@ -105,10 +103,10 @@ func (api *ApiConfig) Register(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	res := userRes{
-  	ID:       user.ID.String(),
-  	Username: user.Username,
-  	Email:    user.Email,
-  	Role:     user.Role,
+		ID:       user.ID.String(),
+		Username: user.Username,
+		Email:    user.Email,
+		Role:     user.Role,
 	}
 
 	json.NewEncoder(w).Encode(res)
@@ -125,7 +123,7 @@ func (api *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := api.DB.GetUserByUsername(r.Context(), req.Username) 
+	user, err := api.DB.GetUserByUsername(r.Context(), req.Username)
 	if err != nil {
 		respondWithError(w, http.StatusUnauthorized, "Credenciais inválidas.")
 		return
@@ -146,7 +144,7 @@ func (api *ApiConfig) Login(w http.ResponseWriter, r *http.Request) {
 	cookie := utils.GenerateAuthCookie(token)
 
 	http.SetCookie(w, cookie)
-		
+
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -165,10 +163,10 @@ func (api *ApiConfig) GetMe(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userUUID, err := uuid.Parse(userID)
-  if err != nil {
-    respondWithError(w, http.StatusBadRequest, "ID de usuário inválido")
-    return
-  }
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "ID de usuário inválido")
+		return
+	}
 
 	user, err := api.DB.GetUserByID(r.Context(), userUUID)
 	if err != nil {
@@ -179,10 +177,10 @@ func (api *ApiConfig) GetMe(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	res := userRes{
-  	ID:       user.ID.String(),
-  	Username: user.Username,
-  	Email:    user.Email,
-  	Role:     user.Role,
+		ID:       user.ID.String(),
+		Username: user.Username,
+		Email:    user.Email,
+		Role:     user.Role,
 	}
 
 	json.NewEncoder(w).Encode(res)

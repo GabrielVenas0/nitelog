@@ -1,1 +1,33 @@
 @import 'tailwindcss';
+
+#root{
+     background-color: var(--bg);
+     color: var(--accent)
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-in-top {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slide-in-bottom {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@layer utilities {
+  .animate-slide-right { animation: slide-in-right 0.3s ease-out forwards; }
+  .animate-slide-left { animation: slide-in-left 0.3s ease-out forwards; }
+  .animate-slide-top { animation: slide-in-top 0.3s ease-out forwards; }
+  .animate-slide-bottom { animation: slide-in-bottom 0.3s ease-out forwards; }
+}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/env"
 	"backend/internal/database"
 	"backend/internal/handler"
 	. "backend/internal/middleware"
@@ -9,6 +10,7 @@ import (
 )
 
 func main() {
+	env.Load()
 
 	db := database.Connect()
 	defer db.Close()

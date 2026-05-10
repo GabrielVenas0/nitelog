@@ -3,6 +3,7 @@ package env
 import (
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/joho/godotenv"
 )
@@ -16,19 +17,17 @@ func (env *Enviroments) GetKey(key string) string {
 }
 
 var ENV Enviroments
-var env_path string
 
-func init() {
-	if path, err := os.Getwd(); err != nil {
+func Load() {
+	path, err := os.Getwd()
+	if err != nil {
 		log.Fatalf("ERROR: Falha ao encontrar o caminho do workspace: %v", err)
-	} else {
-		env_path = path
 	}
 
-	env_path += "\\.env"
+	envPath := filepath.Join(path, "..", ".env")
 
-	var err error
-	if ENV.keys, err = godotenv.Read(env_path); err != nil {
+	ENV.keys, err = godotenv.Read(envPath)
+	if err != nil {
 		log.Fatalf("ERROR: Falha ao carregar as variáveis de ambiente: %v", err)
 	}
 }

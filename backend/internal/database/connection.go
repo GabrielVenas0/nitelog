@@ -1,22 +1,16 @@
 package database
 
 import (
+	"backend/env"
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 func Connect() *sql.DB {
-	err := godotenv.Load()
-	if err != nil {
-		log.Println(".env not found.")
-	}
-
-	dsn := os.Getenv("DATABASE_URL")
+	dsn := env.ENV.GetKey("DATABASE_URL")
 
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {

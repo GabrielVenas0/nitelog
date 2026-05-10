@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	. "backend/env"
+	"backend/env"
 	"context"
 	"fmt"
 	"net/http"
@@ -23,7 +23,7 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("Método de assinatura inesperado: %v", token.Header["alg"])
 			}
-			return []byte(ENV.GetKey("JWT_SECRET")), nil
+			return []byte(env.ENV.GetKey("JWT_SECRET")), nil
 		})
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)

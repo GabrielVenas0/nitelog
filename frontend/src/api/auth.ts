@@ -1,7 +1,4 @@
-import { API_URL } from './client'
-import axios from 'axios'
-
-const instance = axios.create({ baseURL: API_URL, withCredentials: true })
+import { api } from './client'
 
 interface RegisterApiProps {
   username: FormDataEntryValue | null
@@ -15,7 +12,7 @@ interface LoginApiProps {
 }
 
 export async function GetMeApi() {
-  const response = await instance.get('/auth/me', {})
+  const response = await api.get('/auth/me', {})
   return response.data
 }
 
@@ -24,7 +21,7 @@ export async function RegisterApi({
   password: p,
   email: e,
 }: RegisterApiProps) {
-  const response = await instance.post('/auth/register', {
+  const response = await api.post('/auth/register', {
     username: u,
     password: p,
     email: e,
@@ -33,7 +30,7 @@ export async function RegisterApi({
 }
 
 export async function LoginApi({ username: u, password: p }: LoginApiProps) {
-  const response = await instance.post('/auth/login', {
+  const response = await api.post('/auth/login', {
     username: u,
     password: p,
   })

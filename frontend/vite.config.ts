@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { json5Plugin } from "vite-plugin-json5";
+import { json5Plugin } from 'vite-plugin-json5'
 
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
@@ -13,6 +13,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  envDir: path.resolve(__dirname, '../'),
 })
 
 json5Plugin({ dts: true })

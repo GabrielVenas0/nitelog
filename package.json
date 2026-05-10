@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm -r --parallel dev",
-    "build": "pnpm -r --parallel build",
+    "build": "pnpm --filter frontend build",
     "dev:frontend": "pnpm --filter frontend dev",
     "dev:backend": "pnpm --filter backend dev",
     "docker-up": "pnpm docker compose up -d",

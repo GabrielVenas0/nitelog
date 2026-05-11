@@ -90,8 +90,8 @@ jobs:
       if: matrix.build-mode == 'manual'
       shell: bash
       run: |
-        go -C backend mod download
-        go -C backend build ./...
+        go mod download
+        go build ./...
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4

@@ -11,7 +11,6 @@ CREATE TABLE users (
 CREATE TABLE projects (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
-    owner_id UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -27,7 +26,7 @@ CREATE TABLE tasks (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
     project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-    creator_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    creator_id UUID REFERENCES users(id) ON DELETE SET NULL,
     status VARCHAR(50) NOT NULL DEFAULT 'Não iniciado',
     label VARCHAR(50),
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),

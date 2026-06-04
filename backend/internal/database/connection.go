@@ -10,7 +10,13 @@ import (
 )
 
 func Connect() *sql.DB {
-	dsn := env.ENV.GetKey("DATABASE_URL")
+	user := env.Require("DB_USER")
+	pass := env.Require("DB_PASS")
+	host := env.Require("DB_HOST")
+	port := env.Require("DB_PORT")
+	name := env.Require("DB_NAME")
+
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", user, pass, host, port, name)
 
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {

@@ -1,7 +1,11 @@
 package handler
 
-import "backend/internal/database"
+import (
+	"backend/internal/database"
+	"database/sql"
+)
 
 type ApiConfig struct {
-	DB *database.Queries
+	DB    *database.Queries
+	SqlDB *sql.DB
 }

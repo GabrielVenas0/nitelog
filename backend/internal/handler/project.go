@@ -11,15 +11,49 @@ import (
 )
 
 type projectReq struct {
-	ID string `json:"id"`
 	Name string `json:"name"`
-	OwnerID string `json:"owner_id"`
 }
-	
+
 func (api *ApiConfig) CreateProject(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	
+
 	var req projectReq
+
+	tx, err := api.SqlDB.BeginTx(r.Context(), nil)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Erro ao iniciar a transação")
+	}
+	defer tx.Rollback()
+
+	qtx := api.DB.WithTx(tx)
+
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if req.Name == "" {
+		respondWithError(w, http.StatusBadRequest, "O campo de nome não pode ser vazio.")
+		return
+	}
+
+	if len(req.Name) < 3 || len(req.Name) >= 20 {
+		respondWithError(w, http.StatusBadRequest, "O nome do projeto deve ter de 4 a 20 caracteres")
+		return
+	}
+
+	project, err := qtx.CreateProject(r.Context(), req.Name)
+	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok {
+			if pqErr.Code == "23505" {
+				respondWithError(w, http.StatusConflict, "Já existe um projeto com esse nome.")
+				return
+			}
+		}
+		respondWithError(w, http.StatusInternalServerError, "Erro ao criar o projeto.")
+		return
+	}
 
 	userID, ok := r.Context().Value("userID").(string)
 	if !ok {
@@ -32,50 +66,29 @@ func (api *ApiConfig) CreateProject(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Erro ao gerar o userUUID")
 		return
 	}
-	
-	err = json.NewDecoder(r.Body).Decode(&req)
+
+	err = qtx.AddProjectMember(r.Context(), database.AddProjectMemberParams{
+		ProjectID: project.ID,
+		UserID:    userUUID,
+		Role:      "admin",
+	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	
-	if req.Name == "" {
-		respondWithError(w, http.StatusBadRequest, "O campo de nome não pode ser vazio.")
-		return
-	}
-	
-	if len(req.Name) < 3 || len(req.Name) >= 20 {
-		respondWithError(w, http.StatusBadRequest, "O nome do projeto deve ter de 4 a 20 caracteres")
+		respondWithError(w, http.StatusInternalServerError, "Erro ao adicionar um admin ao projeto")
 		return
 	}
 
-	projectID := uuid.New()
-	
-	params := database.CreateProjectParams {
-		ID: projectID,
-		Name: req.Name,
-		OwnerID: userUUID,
-	}
-
-	project, err := api.DB.CreateProject(r.Context(), params)
+	err = tx.Commit()
 	if err != nil {
-		if pqErr, ok := err.(*pq.Error); ok {
-			if pqErr.Code == "23505" {
-				respondWithError(w, http.StatusConflict, "Já existe um projeto com esse nome.")
-				return
-			}
-		}
-		respondWithError(w, http.StatusInternalServerError, "Erro ao criar o projeto.")
+		respondWithError(w, http.StatusInternalServerError, "Erro ao salvar na DB")
 		return
 	}
-	
+
 	res := projectReq{
-		ID: project.ID.String(),
 		Name: project.Name,
-		OwnerID: project.OwnerID.String(),
 	}
-	
+
 	w.WriteHeader(http.StatusCreated)
+
 	err = json.NewEncoder(w).Encode(res)
 	if err != nil {
 		log.Printf("[CreateProject] Erro ao encodar %v", err)
@@ -83,17 +96,59 @@ func (api *ApiConfig) CreateProject(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (api *ApiConfig) ListProject(w http.ResponseWriter, r *http.Request) {
+func (api *ApiConfig) GetExploreProjects(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	projects, err := api.DB.ListProjects(r.Context())
+	userID, ok := r.Context().Value("userID").(string)
+	if !ok {
+		respondWithError(w, http.StatusInternalServerError, "Erro interno: usuário não identificado no contexto")
+		return
+	}
+
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Erro ao gerar o userUUID")
+		return
+	}
+
+	projects, err := api.DB.GetExploreProjects(r.Context(), userUUID)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Erro ao buscar os projetos")
 		return
 	}
-	
+
 	w.WriteHeader(http.StatusOK)
-	
+
+	err = json.NewEncoder(w).Encode(projects)
+	if err != nil {
+		log.Printf("[ListProject] Erro ao encodar %v", err)
+		return
+	}
+}
+
+func (api *ApiConfig) GetMyProjects(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	userID, ok := r.Context().Value("userID").(string)
+	if !ok {
+		respondWithError(w, http.StatusInternalServerError, "Erro interno: usuário não identificado no contexto")
+		return
+	}
+
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Erro ao gerar o userUUID")
+		return
+	}
+
+	projects, err := api.DB.GetMyProjects(r.Context(), userUUID)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Erro ao buscar os projetos")
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+
 	err = json.NewEncoder(w).Encode(projects)
 	if err != nil {
 		log.Printf("[ListProject] Erro ao encodar %v", err)
@@ -117,9 +172,9 @@ func (api *ApiConfig) GetProjectByID(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Erro ao buscar o projeto")
 		return
 	}
-	
+
 	w.WriteHeader(http.StatusOK)
-	
+
 	err = json.NewEncoder(w).Encode(project)
 	if err != nil {
 		log.Printf("[ListProject] Erro ao encodar %v", err)

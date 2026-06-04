@@ -17,7 +17,8 @@ func main() {
 	queries := database.New(db)
 
 	api := handler.ApiConfig{
-		DB: queries,
+		DB:    queries,
+		SqlDB: db,
 	}
 
 	api.SeedUsers()
@@ -30,7 +31,8 @@ func main() {
 	router.HandleFunc("GET /auth/me", AuthMiddleware(api.GetMe))
 
 	router.HandleFunc("POST /projects", AuthMiddleware(api.CreateProject))
-	router.HandleFunc("GET /projects", AuthMiddleware(api.ListProject))
+	router.HandleFunc("GET /explore", AuthMiddleware(api.GetExploreProjects))
+	router.HandleFunc("GET /myprojects", AuthMiddleware(api.GetMyProjects))
 	router.HandleFunc("GET /projects/{id}", AuthMiddleware(api.GetProjectByID))
 	// router.HandleFunc("DELETE /projects/{id}",AuthMiddleware(handler.DeleteProject))
 

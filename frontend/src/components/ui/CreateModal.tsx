@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks'
-import { CreateProjectApi, CreateTaskApi, GetMyProjects } from '@/api'
+import { CreateProjectApi, CreateTaskApi, GetProjects } from '@/api'
 import { Select, Button, Input, CloseButton } from '@/components'
 import type { Project } from '@/types'
 import { isCancel } from 'axios'
@@ -30,13 +30,13 @@ export function CreateModal() {
     const controller = new AbortController()
     async function loadProjects() {
       try {
-        const projectData = await GetMyProjects(controller.signal)
+        const projectData = await GetProjects(controller.signal)
         setProjects(projectData || [])
       } catch (error) {
         if (isCancel(error)) {
           return
         }
-        console.error('[GetMyProjects] Erro no CreateModal: ', error)
+        console.error('[GetProjects] Erro no CreateModal: ', error)
       }
     }
     loadProjects()

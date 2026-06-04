@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { GetProjects } from '@/api'
+import { GetMyProjects } from '@/api'
 import type { Project } from '@/types'
 import { ProjectCard } from '@/components'
 import { isCancel } from 'axios'
@@ -13,7 +13,7 @@ export function Projects() {
     async function loadProjects() {
       setLoading(true)
       try {
-        const projectsData = await GetProjects(controller.signal)
+        const projectsData = await GetMyProjects(controller.signal)
         setProjects(projectsData || [])
       } catch (err) {
         if (isCancel(err)) {
@@ -44,7 +44,7 @@ export function Projects() {
       ) : (
         <div className='grid grid-cols-6 gap-4'>
           {projects.map((p) => (
-            <ProjectCard id={p.id} name={p.name} key={p.id} owner_id={p.owner_id}></ProjectCard>
+            <ProjectCard id={p.id} name={p.name} key={p.id} created_at={p.created_at} updated_at={p.updated_at}></ProjectCard>
           ))}
         </div>
       )}

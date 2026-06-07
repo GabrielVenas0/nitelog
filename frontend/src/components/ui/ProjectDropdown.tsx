@@ -3,7 +3,7 @@ import { useDropdown } from '@/hooks'
 import type { Project } from '@/types'
 import { isCancel } from 'axios'
 import { useEffect, useState } from 'react'
-import { LayoutTemplate } from 'lucide-react'
+import { LayoutTemplate, PlusIcon } from 'lucide-react'
 import { Navlink } from './Navlink'
 
 export const ProjectDropdown = () => {
@@ -53,44 +53,49 @@ export const ProjectDropdown = () => {
       onClick={closeDropdown}
     >
       <div
-        className='absolute top-12 left-2 flex rounded-xl border border-gray-400 bg-white'
+        className='absolute top-12 left-2 flex rounded-xl border border-(--border) bg-(--bg) shadow-xl'
         onClick={(e) => e.stopPropagation()}
       >
         <div className='flex w-70 flex-col'>
-          <div className='border-gray-20 flex flex-col gap-2 rounded-t-xl border-b border-gray-400 bg-white p-3'>
+          <div className='flex flex-col gap-2 rounded-t-xl border-b border-(--border) bg-(--bg) p-3'>
             <div className='flex items-center gap-2'>
-              <LayoutTemplate className='h-10 w-10'></LayoutTemplate>
-              <div>
-                <p className='text-sm font-bold text-gray-500'>
+              {/* em breve criar uma logo e logo do projeto */}
+              <LayoutTemplate className='h-10 w-10 text-(--textSecondary)' />
+              <div className='flex flex-col'>
+                <span className='text-sm leading-tight font-bold text-(--textPrimary)'>
                   Nome do Projeto
-                </p>
-                <p className='text-sm text-gray-500'>0 membros</p>
+                </span>
+                <span className='text-xs font-medium text-(--textMuted)'>
+                  0 membros
+                </span>
               </div>
             </div>
 
-            <div className='flex items-center gap-2 text-xs font-semibold text-gray-500'>
-              <button className='rounded-md border border-gray-300 px-2 py-1 hover:bg-white'>
+            <div className='flex items-center gap-2 text-xs font-semibold'>
+              <button className='rounded-md border border-(--border) px-2 py-1 text-(--textSecondary) transition-colors hover:bg-(--fg) hover:text-(--textPrimary)'>
                 Configurações
               </button>
-              <button className='rounded-md border border-gray-300 px-2 py-1 hover:bg-white'>
+              <button className='rounded-md border border-(--border) px-2 py-1 text-(--textSecondary) transition-colors hover:bg-(--fg) hover:text-(--textPrimary)'>
                 Convidar membros
               </button>
             </div>
           </div>
 
-          <div className='rounded-b-xl bg-gray-100 px-3 py-2'>
-            <div>
-              {!isLoading && projects.length === 0 && <span>Novo espaço</span>}
+          <div className='rounded-b-xl bg-(--bg) px-3 py-2'>
+            <div className='flex flex-col'>
               {!isLoading &&
                 projects.map((p) => (
                   <Navlink key={p.id} to={`/projects/${p.id}`}>
+                    <LayoutTemplate className='h-4 w-4'></LayoutTemplate>
                     {p.name}
                   </Navlink>
                 ))}
             </div>
 
             <div>
-              <p>Novo espaço</p>
+              <button className='flex w-full items-center gap-2 rounded-md p-1.5 text-sm text-(--accent)/80 transition-colors hover:bg-(--accentedBg) hover:text-(--accent)'>
+                <PlusIcon className='h-4 w-4'></PlusIcon>Novo espaço
+              </button>
             </div>
           </div>
         </div>

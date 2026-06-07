@@ -33,15 +33,17 @@ export function ProjectView() {
 
   return (
     <div>
-      <h1>{projectName}</h1>
       {tasks.length === 0 ? (
         <p>Nenhuma tarefa</p>
       ) : (
         <div className='grid grid-cols-6 gap-4'>
           {tasks.map((t) => (
-            <div key={t.id} className='rounded-sm border border-gray-300'>
-              <h3>{t.name}</h3>
-              <span>{t.status}</span>
+            <div key={t.id} className='rounded-sm border border-(--border) p-2'>
+              <h1 className='font-semibold text-(--textPrimary)'>
+                {projectName}
+              </h1>
+              <h3 className='text-(--textPrimary)'>{t.name}</h3>
+              <span className='text-(--textSecondary)'>{t.status}</span>
             </div>
           ))}
         </div>

@@ -77,24 +77,32 @@ export function CreateModal() {
 
   return (
     <div
-      className='fixed inset-0 z-50 flex h-screen items-center justify-center bg-black/50'
+      // Adicionado backdrop-blur-sm para desfoque do fundo
+      className='fixed inset-0 z-50 flex h-screen items-center justify-center bg-black/40 backdrop-blur-sm'
       onClick={closeModal}
     >
       <div
-        className='flex w-md flex-col gap-2 rounded-sm bg-white px-6 py-4'
+        // Aumentado o padding (p-6), arredondamento (rounded-xl) e sombra (shadow-2xl)
+        className='flex w-full max-w-md flex-col gap-4 rounded-xl border border-(--border) bg-(--bg) p-6 shadow-2xl'
         onClick={(e) => e.stopPropagation()}
       >
-        <div className='flex justify-between gap-2'>
-          <h1 className='text-2xl'>
-            {itemType === 'project' ? 'Criar Projeto' : 'Criar Tarefa'}
-          </h1>
-          <CloseButton></CloseButton>
+        {/* HEADER DO MODAL */}
+        <div className='flex items-center justify-between border-b border-(--border) pb-4'>
+          <div>
+            <h1 className='text-lg font-bold text-(--textPrimary)'>
+              {itemType === 'project' ? 'Novo Projeto' : 'Nova Tarefa'}
+            </h1>
+            <p className='text-sm text-(--textSecondary)'>
+              Preencha os detalhes abaixo para continuar.
+            </p>
+          </div>
+          <CloseButton onClick={closeModal} />
         </div>
-        <form onSubmit={submit} className='flex flex-col gap-2'>
+
+        <form onSubmit={submit} className='mt-2 flex flex-col gap-5'>
           <Select
             name='itemType'
-            label='Tipo do Ticket'
-            className='rounded-sm bg-white'
+            label='O que você deseja criar?'
             onChange={(e) => setItemType(e.target.value)}
             required
           >
@@ -103,14 +111,19 @@ export function CreateModal() {
           </Select>
 
           {itemType === 'project' ? (
-            <Input name='projectname' label='Nome do Projeto' required />
+            <Input
+              name='projectname'
+              label='Nome do Projeto'
+              placeholder='Ex: Sotero SOS'
+              required
+            />
           ) : (
-            <div>
-              <Select name='project' label='Projeto' required>
+            <div className='flex flex-col gap-5'>
+              <Select name='project' label='Vincular ao Projeto' required>
                 {projects.length === 0 ? (
-                  <option value=''>Sem projetos</option>
+                  <option value=''>Sem projetos disponíveis</option>
                 ) : (
-                  <optgroup key={'optGroup'}>
+                  <optgroup label='Seus Projetos'>
                     {projects.map((p) => (
                       <option key={p.id} value={p.id}>
                         {p.name}
@@ -119,19 +132,23 @@ export function CreateModal() {
                   </optgroup>
                 )}
               </Select>
-              <Input name='taskname' label='Nome da tarefa' required></Input>
-              {/* <Input
-                name='taskdesc'
-                label='Descrição da tarefa'
+              <Input
+                name='taskname'
+                label='Título da Tarefa'
+                placeholder='Ex: Corrigir bug no formulário'
                 required
-              ></Input>
-              <Select name='assignee' label='Responsável'>
-                <option value='temp1'></option>
-                <option value='temp2'>Gabriel Venas</option>
-              </Select> */}
+              />
             </div>
           )}
-          <Button type='submit'>Concluir</Button>
+
+          <div className='mt-4 flex justify-end gap-3'>
+            <Button type='button' onClick={closeModal}>
+              Cancelar
+            </Button>
+            <Button type='submit'>
+              {itemType === 'project' ? 'Criar Projeto' : 'Criar Tarefa'}
+            </Button>
+          </div>
         </form>
       </div>
     </div>

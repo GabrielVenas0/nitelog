@@ -1,12 +1,18 @@
 {
-    name: 'Light Default',
-    kind: 'light',
+  name: 'Light Default',
+  kind: 'light',
 
-    props: {
-        accent: '#357fec',
-        accentedBg: '#a4f4fff6',
-        fg: '#d7e0e48f',
-        bg: '#e3eaf5',
-        error: '#dd4141'
-    }
+  props: {
+    bg: '#ffffff',
+    fg: '#f3f4f6',
+    border: '#e5e7eb',
+    textPrimary: '#111827',
+    textSecondary: '#6b7280',
+    textMuted: '#9ca3af',
+    accent: '#2b7fff',
+    accentedBg: '#e2f0ff',
+    error: '#ef4444',
+    info: '#3b82f6',
+    warn: '#f59e0b',
+  },
 }

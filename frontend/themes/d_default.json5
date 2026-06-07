@@ -1,13 +1,18 @@
 {
-    name: 'Dark Default',
-    kind: 'Dark',
+  name: 'Dark Default',
+  kind: 'dark',
 
-    props: {
-        accent: '#f7fbff',
-        accentedBg: '#94f3fff6',
-        fg: '#131224',
-        bg: '#1a1d29',
-        error: '#dd4141'
-
-    }
+  props: {
+    bg: '#1a1d29',
+    fg: '#232736',
+    border: '#31374a',
+    textPrimary: '#f8f9fa',
+    textSecondary: '#94a0b8',
+    textMuted: '#5b657e',
+    accent: '#3b82f6',
+    accentedBg: '#21314f',
+    error: '#ef4444',
+    info: '#3b82f6',
+    warn: '#f59e0b',
+  },
 }

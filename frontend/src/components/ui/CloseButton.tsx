@@ -11,7 +11,7 @@ export const CloseButton = forwardRef<
     <button
       ref={ref}
       {...props}
-      className='cursor-pointer rounded-sm bg-gray-400 p-1 text-white transition-colors duration-500 hover:bg-gray-500'
+      className='cursor-pointer rounded-sm bg-(--border) p-1 text-(--textPrimary) transition-colors duration-500 hover:bg-(--border)/50 hover:text-(--textSecondary)'
       aria-label='Close'
       type='button'
       onClick={closeModal}

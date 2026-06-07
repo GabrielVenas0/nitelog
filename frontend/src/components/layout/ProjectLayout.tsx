@@ -31,14 +31,14 @@ export function ProjectLayout() {
   if (!isLoading && !project) return <div>Projeto não encontrado.</div>
 
   return (
-    <div className='flex h-screen w-full flex-col overflow-hidden bg-(--bg) text-gray-800 transition-colors'>
+    <div className='flex h-screen w-full flex-col overflow-hidden bg-(--bg) transition-colors'>
       {!isLoading && project && <Header pName={project.name} />}
 
       <div className='flex flex-1 overflow-hidden'>
         {/* <ProjectSidebar projectId={id} /> */}
         <ProjectSidebar />
 
-        <main className='flex-1 overflow-x-hidden overflow-y-auto border-t border-gray-300 p-12'>
+        <main className='flex-1 overflow-x-hidden overflow-y-auto border-t border-(--border) p-12'>
           <Outlet />
         </main>
       </div>

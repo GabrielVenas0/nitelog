@@ -9,14 +9,21 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const generatedId = useId()
     const inputId = id || generatedId
     return (
-      <div className='flex w-full flex-col gap-1'>
-        {label && <label htmlFor={inputId}>{label}</label>}
+      <div className='flex w-full flex-col gap-1.5'>
+        {label && (
+          <label
+            htmlFor={inputId}
+            className='text-sm font-semibold text-(--textSecondary)'
+          >
+            {label}
+          </label>
+        )}
         <input
           ref={ref}
           {...props}
           id={inputId}
-          className='border-sm border-b border-gray-300 px-2 py-1 transition-colors duration-500 outline-none'
-        ></input>
+          className='w-full rounded-md border border-(--border) bg-(--bg) px-3 py-2 text-sm text-(--textPrimary) transition-all outline-none placeholder:text-(--textMuted) focus:border-(--accent) focus:ring-1 focus:ring-(--accent)'
+        />
       </div>
     )
   },

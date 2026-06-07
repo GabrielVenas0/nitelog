@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks'
-import { CreateProjectApi, CreateTaskApi, GetProjects } from '@/api'
+import { CreateProjectApi, CreateTaskApi, GetMyProjects } from '@/api'
 import { Select, Button, Input, CloseButton } from '@/components'
 import type { Project } from '@/types'
 import { isCancel } from 'axios'
@@ -30,7 +30,7 @@ export function CreateModal() {
     const controller = new AbortController()
     async function loadProjects() {
       try {
-        const projectData = await GetProjects(controller.signal)
+        const projectData = await GetMyProjects(controller.signal)
         setProjects(projectData || [])
       } catch (error) {
         if (isCancel(error)) {
@@ -42,11 +42,10 @@ export function CreateModal() {
     loadProjects()
 
     return () => {
-      document.removeEventListener('keydown', handleKeydown);
+      document.removeEventListener('keydown', handleKeydown)
       controller.abort()
     }
   }, [isOpen, closeModal])
-
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -77,8 +76,14 @@ export function CreateModal() {
   if (!isOpen) return null
 
   return (
-    <div className='flex h-screen fixed inset-0 z-50 bg-black/50 items-center justify-center' onClick={closeModal}>
-      <div className='flex w-md flex-col gap-2 px-6 py-4 bg-white rounded-sm' onClick={(e) => e.stopPropagation()}>
+    <div
+      className='fixed inset-0 z-50 flex h-screen items-center justify-center bg-black/50'
+      onClick={closeModal}
+    >
+      <div
+        className='flex w-md flex-col gap-2 rounded-sm bg-white px-6 py-4'
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className='flex justify-between gap-2'>
           <h1 className='text-2xl'>
             {itemType === 'project' ? 'Criar Projeto' : 'Criar Tarefa'}

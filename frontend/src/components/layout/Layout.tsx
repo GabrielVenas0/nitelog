@@ -1,7 +1,7 @@
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 import { Outlet } from 'react-router-dom'
-import { CreateModal } from '../ui'
+import { CreateModal, ProjectDropdown } from '../ui'
 
 export function Layout() {
   return (
@@ -17,6 +17,7 @@ export function Layout() {
       </div>
 
       <CreateModal></CreateModal>
+      <ProjectDropdown></ProjectDropdown>
     </div>
   )
 }

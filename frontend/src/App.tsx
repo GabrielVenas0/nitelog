@@ -2,13 +2,18 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import {
   Projects,
   ForYou,
-  ProjectView,
   Login,
   Register,
   NotFound,
-  ConfigView
+  ConfigView,
+  ProjectView,
 } from '@/pages'
-import { Layout, ProtectedRoute, CreateModal } from '@/components'
+import {
+  Layout,
+  ProtectedRoute,
+  CreateModal,
+  ProjectLayout,
+} from '@/components'
 import { AuthProvider, ThemeProvider, ToastProvider } from '@/context'
 
 export default function App() {
@@ -25,15 +30,17 @@ export default function App() {
                 <Route path='/' element={<Layout />}>
                   <Route path='/foryou' element={<ForYou />}></Route>
                   <Route path='/projects' element={<Projects />}></Route>
-                  <Route path='/projects/:id' element={<ProjectView />}></Route>
                   <Route path='/create' element={<CreateModal />}></Route>
-                  <Route path='/config' element={<ConfigView/>}></Route>
+                  <Route path='/config' element={<ConfigView />}></Route>
+                </Route>
+                <Route path='/projects/:id' element={<ProjectLayout />}>
+                  <Route index element={<ProjectView />}></Route>
                 </Route>
               </Route>
 
               <Route path='*' element={<NotFound />}></Route>
             </Routes>
-            </ToastProvider>
+          </ToastProvider>
         </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>

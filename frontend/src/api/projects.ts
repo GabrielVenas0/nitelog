@@ -1,11 +1,6 @@
 import type { Project } from '@/types'
 import { api } from './client'
 
-export async function GetProjects(signal: AbortSignal) {
-  const response = await api.get('/projects', { signal })
-  return response.data
-}
-
 export async function GetExploreProjects(
   signal?: AbortSignal,
 ): Promise<Project[]> {
@@ -18,7 +13,7 @@ export async function GetMyProjects(signal?: AbortSignal): Promise<Project[]> {
   return response.data
 }
 
-export async function GetProjectById(project_id: string): Promise<Project[]> {
+export async function GetProjectById(project_id: string): Promise<Project> {
   const response = await api.get(`/projects/${project_id}`)
   return response.data
 }

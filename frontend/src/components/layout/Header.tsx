@@ -1,28 +1,34 @@
 import {
-  Gem,
   ArrowLeftToLine,
   Plus,
   Search,
   Settings,
   Bell,
   User,
+  LayoutTemplate,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Button } from '../ui'
-import { useModal } from '@/hooks'
+import { useDropdown, useModal } from '@/hooks'
 
-export const Header = () => {
+interface HeaderProps {
+  pName?: string
+}
+
+export const Header = ({ pName }: HeaderProps) => {
   const openModal = useModal((state) => state.openModal)
+  const openDropdown = useDropdown((state) => state.openDropdown)
 
   return (
-    <header className='flex h-12 w-full justify-between px-4 text-(--accent)  bg-(--bg)'>
+    <header className='flex h-12 w-full justify-between bg-(--bg) px-2 text-(--accent)'>
       {/* LEFT */}
-      <div className='flex w-56 items-center justify-between border-r border-gray-300'>
-        <div className='flex cursor-pointer items-center gap-2'>
-          <Gem className='h-5 w-5' />
-          <Link to='/'>Nitelog</Link>
-        </div>
-        <div className='mr-2 cursor-pointer hover:text-(--fg)  rounded-md px-2 py-1 hover:bg-(--accent)'>
+      <div className='flex w-58 items-center border-r border-gray-300'>
+        <div className='mr-2 flex w-full cursor-pointer items-center justify-between rounded-md px-2 py-1 hover:bg-(--accent)'>
+          <div className='flex items-center gap-2' onClick={openDropdown}>
+            <LayoutTemplate className='w-4' />
+            {pName == undefined && <p>Nitelog</p>}
+            <p>{pName}</p>
+          </div>
           <ArrowLeftToLine className='w-4' />
         </div>
       </div>
@@ -42,7 +48,9 @@ export const Header = () => {
       {/* RIGHT */}
       <div className='flex items-center gap-4'>
         <Bell />
-        <Link to={"/config"}><Settings/></Link>
+        <Link to={'/config'}>
+          <Settings />
+        </Link>
         <User />
       </div>
     </header>

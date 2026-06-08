@@ -24,9 +24,11 @@ export function Login() {
 
   return (
     <div className='flex h-screen items-center justify-center'>
-      <div className='flex flex-col rounded-sm border border-gray-300 p-6'>
+      <div className='flex w-xs flex-col rounded-sm border border-(--border) p-6'>
         <form action={submit} className='flex flex-col gap-4'>
-          <h1 className='text-center text-2xl'>Login</h1>
+          <h1 className='text-center text-2xl font-semibold text-(--textPrimary)'>
+            Login
+          </h1>
           <Input
             type='text'
             name='username'
@@ -35,8 +37,11 @@ export function Login() {
           />
           <Input type='password' name='password' placeholder='Senha' required />
 
-          <p>
-            Não possuí uma conta? <Link to='/register'>Registre-se</Link>
+          <p className='text-(--textSecondary)'>
+            Não possuí uma conta?{' '}
+            <Link to='/register' className='text-blue-500 hover:text-blue-600'>
+              Registre-se
+            </Link>
           </p>
 
           <Button type='submit'>Entrar</Button>

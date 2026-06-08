@@ -24,12 +24,14 @@ export function Register() {
 
   return (
     <div className='flex h-screen items-center justify-center'>
-      <div className='flex flex-col rounded-sm border border-gray-300 p-6'>
+      <div className='flex w-xs flex-col rounded-sm border border-(--border) p-6'>
         <form action={submit} className='flex flex-col gap-4'>
-          <h1 className='text-center text-2xl'>Registre-se</h1>
+          <h1 className='text-center text-2xl font-semibold text-(--textPrimary)'>
+            Registre-se
+          </h1>
           <Input type='text' name='username' placeholder='Usuário' required />
           <Input type='password' name='password' placeholder='Senha' required />
-          <Input type='email' name='email' placeholder='Email' required />
+          <Input type='text' name='email' placeholder='Email' required />
 
           <p>
             Já possuí uma conta? <Link to='/login'>Entre</Link>

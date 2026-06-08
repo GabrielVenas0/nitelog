@@ -6,13 +6,13 @@ import {
   Register,
   NotFound,
   ConfigView,
-  ProjectView,
 } from '@/pages'
 import {
   Layout,
   ProtectedRoute,
   CreateModal,
   ProjectLayout,
+  Kanban,
 } from '@/components'
 import { AuthProvider, ThemeProvider, ToastProvider } from '@/context'
 
@@ -34,7 +34,10 @@ export default function App() {
                   <Route path='/config' element={<ConfigView />}></Route>
                 </Route>
                 <Route path='/projects/:id' element={<ProjectLayout />}>
-                  <Route index element={<ProjectView />}></Route>
+                  <Route
+                    path='/projects/:id/kanban'
+                    element={<Kanban />}
+                  ></Route>
                 </Route>
               </Route>
 

@@ -1,12 +1,11 @@
-// interface ProjectSidebarProps {
-//   projectId: string
-// }
-
-import { Flame } from 'lucide-react'
+import { Flame, Kanban } from 'lucide-react'
 import { Navlink } from '../ui'
 
-// export const ProjectSidebar = ({ projectId }: ProjectSidebarProps) => {
-export const ProjectSidebar = () => {
+interface ProjectSidebarProps {
+  projectId: string
+}
+
+export const ProjectSidebar = ({ projectId }: ProjectSidebarProps) => {
   return (
     <aside className='flex h-full w-60 flex-col border-r border-(--border) bg-(--bg) text-(--accent) transition-colors'>
       <nav className='flex flex-col gap-2 p-2'>
@@ -14,7 +13,10 @@ export const ProjectSidebar = () => {
           <Flame className='h-5 w-5' />
           Para você
         </Navlink>
-        {/* Implementar arquivos do projeto: quadro kanban markdown etc*/}
+        <Navlink to={`/projects/${projectId}/kanban`}>
+          <Kanban className='h-5 w-5' />
+          Kanban
+        </Navlink>
       </nav>
     </aside>
   )

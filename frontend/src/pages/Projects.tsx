@@ -48,7 +48,8 @@ export function Projects() {
               id={p.id}
               name={p.name}
               key={p.id}
-              owner_id={p.owner_id}
+              created_at={p.created_at}
+              updated_at={p.updated_at}
             ></ProjectCard>
           ))}
         </div>

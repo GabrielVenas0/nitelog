@@ -54,9 +54,9 @@ export function CreateModal() {
 
     if (itemType === 'project') {
       const name = formData.get('projectname')
-
+      if (name == null) return
       try {
-        await CreateProjectApi(name)
+        await CreateProjectApi(String(name))
         navigate('/projects')
       } catch (error) {
         console.error('[CreateProject] Erro no CreateModal: ', error)

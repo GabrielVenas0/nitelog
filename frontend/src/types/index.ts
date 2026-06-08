@@ -1,5 +1,3 @@
-export * from './project'
-export * from './task'
-export * from './user'
+export * from './types'
 export * from './auth'
 export * from './theme'

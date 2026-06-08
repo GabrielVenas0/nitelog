@@ -1,3 +1,4 @@
+import type { Task } from '@/types'
 import { api } from './client'
 
 export async function GetTasks(projectId: string) {
@@ -8,8 +9,8 @@ export async function GetTasks(projectId: string) {
 export async function CreateTaskApi(
   projectId: string,
   name: FormDataEntryValue | null,
-) {
-  const response = await api.post(`/projects/${projectId}/tasks`, {
+): Promise<Task> {
+  const response = await api.post<Task>(`/projects/${projectId}/tasks`, {
     name: name,
   })
   return response.data

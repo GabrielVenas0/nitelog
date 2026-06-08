@@ -1,48 +1,28 @@
 import { GetMyProjects } from '@/api'
 import { useDropdown } from '@/hooks'
-import type { Project } from '@/types'
-import { isCancel } from 'axios'
-import { useEffect, useState } from 'react'
 import { LayoutTemplate, PlusIcon } from 'lucide-react'
 import { Navlink } from './Navlink'
+import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
 
 export const ProjectDropdown = () => {
   const isOpen = useDropdown((state) => state.isOpen)
   const closeDropdown = useDropdown((state) => state.closeDropdown)
 
-  const [projects, setProjects] = useState<Project[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const { data: projects, isLoading } = useQuery({
+    queryKey: ['my-projects'],
+    queryFn: ({ signal }) => GetMyProjects(signal),
+    staleTime: 1000 * 60 * 5,
+    enabled: isOpen,
+  })
 
   useEffect(() => {
     if (!isOpen) return
-
     const handleKeydown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        closeDropdown()
-      }
+      if (e.key === 'Escape') closeDropdown()
     }
-
     document.addEventListener('keydown', handleKeydown)
-
-    const controller = new AbortController()
-
-    async function loadProjects() {
-      try {
-        const data = await GetMyProjects(controller.signal)
-        setProjects(data || [])
-      } catch (error) {
-        if (isCancel(error)) return
-        console.error('[GetMyProjects] Erro no ProjectPropdown: ', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    loadProjects()
-
-    return () => {
-      document.removeEventListener('keydown', handleKeydown)
-      controller.abort()
-    }
+    return () => document.removeEventListener('keydown', handleKeydown)
   }, [isOpen, closeDropdown])
 
   if (!isOpen) return null
@@ -84,7 +64,7 @@ export const ProjectDropdown = () => {
           <div className='rounded-b-xl bg-(--bg) px-3 py-2'>
             <div className='flex flex-col'>
               {!isLoading &&
-                projects.map((p) => (
+                projects?.map((p) => (
                   <Navlink key={p.id} to={`/projects/${p.id}`}>
                     <LayoutTemplate className='h-4 w-4'></LayoutTemplate>
                     {p.name}

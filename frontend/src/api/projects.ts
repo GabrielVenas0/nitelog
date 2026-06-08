@@ -18,9 +18,7 @@ export async function GetProjectById(project_id: string): Promise<Project> {
   return response.data
 }
 
-export async function CreateProjectApi(
-  name: FormDataEntryValue | null,
-): Promise<Project[]> {
-  const response = await api.post('/projects', { name: name })
+export async function CreateProjectApi(name: string): Promise<Project> {
+  const response = await api.post<Project>('/projects', { name })
   return response.data
 }

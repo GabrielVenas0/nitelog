@@ -5,6 +5,6 @@
     "dev": "go run cmd/api/main.go"
   },
   "dependencies": {
-    "pnpm": "^10.30.3"
+    "pnpm": "^11.5.3"
   }
 }

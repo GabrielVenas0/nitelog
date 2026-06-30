@@ -9,14 +9,14 @@ importers:
   .:
     dependencies:
       pnpm:
-        specifier: ^10.30.3
-        version: 10.30.3
+        specifier: ^10.34.4
+        version: 10.34.4
 
   backend:
     dependencies:
       pnpm:
-        specifier: ^10.30.3
-        version: 10.30.3
+        specifier: ^10.34.4
+        version: 10.34.4
 
   frontend:
     dependencies:
@@ -1308,8 +1308,8 @@ packages:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
 
-  pnpm@10.30.3:
-    resolution: {integrity: sha512-yWHR4KLY41TsqlFmuCJRZmi39Ey1vZUSLVkN2Bki9gb1RzttI+xKW+Bef80Y6EiNR9l4u+mBhy8RRdBumnQAFw==}
+  pnpm@10.34.4:
+    resolution: {integrity: sha512-h2i+VSAK4/Iia2Un/Momh+FLxOXxLXchoPJdo99HkVF3BYZI20F3uvNIEg+guidS2NjZP2vq8f5krhjajelhrw==}
     engines: {node: '>=18.12'}
     hasBin: true
 
@@ -2691,7 +2691,7 @@ snapshots:
 
   picomatch@4.0.4: {}
 
-  pnpm@10.30.3: {}
+  pnpm@10.34.4: {}
 
   postcss@8.5.14:
     dependencies:

@@ -10,6 +10,6 @@
     "docker-down": "pnpm docker compose down"
   },
   "dependencies": {
-    "pnpm": "^10.30.3"
+    "pnpm": "^10.34.5"
   }
 }

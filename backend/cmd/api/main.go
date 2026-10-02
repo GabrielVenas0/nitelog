@@ -38,8 +38,7 @@ func main() {
 
 	router.HandleFunc("POST /projects/{project_id}/tasks", AuthMiddleware(api.CreateTask))
 	router.HandleFunc("GET /projects/{project_id}/tasks", AuthMiddleware(api.ListProjectTasks))
-
-	// router.HandleFunc("DELETE /projects/{project_id}/tasks/{task_id}", middleware.AuthMiddleware(handler.DeleteTask))
+	router.HandleFunc("DELETE /projects/{project_id}/tasks/{task_id}", AuthMiddleware(api.DeleteTask))
 
 	router.HandleFunc("/health", handler.HealthCheck)
 

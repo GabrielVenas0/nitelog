@@ -19,6 +19,17 @@ export async function CreateTaskApi(
   return response.data
 }
 
+export async function DeleteTaskApi(
+  projectId: string,
+  taskID: string,
+): Promise<Task> {
+  const response = await api.delete<Task>(
+    `/projects/${projectId}/tasks/${taskID}`,
+    {},
+  )
+  return response.data
+}
+
 export async function GetCompletedTasks(signal?: AbortSignal): Promise<Task> {
   const response = await api.get('/completedtasks', { signal })
   return response.data

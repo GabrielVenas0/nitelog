@@ -1,7 +1,8 @@
-import { GetTasks } from '@/api'
+import { GetTasks, DeleteTaskApi } from '@/api'
 import { NotFound } from '@/pages'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
+import EllipsisMenu, { type MenuItem } from './EllipsisMenu'
 
 export const Kanban = () => {
   const { id } = useParams<{ id: string }>()
@@ -34,9 +35,7 @@ export const Kanban = () => {
     )
 
   return (
-    <div className='flex h-full gap-4 overflow-x-auto'>
-      {/* Em breve criar tabela com colunas com ações, status, descrição, label e etc*/}
-      {/* Em breve criar botão para criar uma nova tarefa no final da coluna*/}
+    <div className='flex h-full gap-4 overflow-x-auto p-4'>
       <div className='flex h-max w-80 flex-col gap-3 rounded-lg bg-(--fg) p-4'>
         <h2 className='text-sm font-bold text-(--textSecondary) uppercase'>
           Backlog
@@ -48,19 +47,38 @@ export const Kanban = () => {
           </span>
         )}
 
-        {tasks?.map((t) => (
-          <div
-            key={t.id}
-            className='flex cursor-pointer flex-col gap-1 rounded-md border border-(--border) bg-(--bg) p-3 shadow-sm transition-colors hover:border-(--accent)'
-          >
-            <p className='text-sm font-semibold text-(--textPrimary)'>
-              {t.name}
-            </p>
-            <span className='text-xs font-medium text-(--textMuted)'>
-              {t.status}
-            </span>
-          </div>
-        ))}
+        {tasks?.map((t) => {
+          const taskActions: MenuItem[] = [
+            {
+              label: 'Editar',
+              onClick: () => console.log(`Editar tarefa ${t.id}`),
+            },
+            {
+              label: 'Excluir',
+              onClick: () => DeleteTaskApi(id, t.id),
+              variant: 'danger',
+            },
+          ]
+
+          return (
+            <div
+              key={t.id}
+              onClick={() => console.log(`Abrir detalhes da tarefa ${t.id}`)}
+              className='flex cursor-pointer items-start justify-between gap-2 rounded-md border border-(--border) bg-(--bg) p-3 shadow-sm transition-colors hover:border-(--accent)'
+            >
+              <div className='flex min-w-0 flex-col gap-1'>
+                <p className='truncate text-sm font-semibold text-(--textPrimary)'>
+                  {t.name}
+                </p>
+                <span className='text-xs font-medium text-(--textMuted)'>
+                  {t.status}
+                </span>
+              </div>
+
+              <EllipsisMenu items={taskActions} />
+            </div>
+          )
+        })}
       </div>
     </div>
   )

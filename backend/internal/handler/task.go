@@ -126,40 +126,38 @@ func (api *ApiConfig) ListProjectTasks(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// func DeleteTask(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
+func (api *ApiConfig) DeleteTask(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
-// 	projectId := r.PathValue("project_id")
-// 	taskId := r.PathValue("task_id")
+	taskID := r.PathValue("task_id")
+	// projectID := r.PathValue("project_id")
+	// userID, ok := r.Context().Value("userID").(string)
+	// if !ok {
+	// 	respondWithError(w, http.StatusInternalServerError, "Erro interno: usuário não identificado no contexto")
+  //   return
+	// }
 
-// 	if !projectExists(projectId) {
-// 		respondWithError(w, http.StatusNotFound, "[DeleteTask] Project não encontrado.")
-// 		return
-// 	}
+	taskUUID, err := uuid.Parse(taskID)
+	if err != nil {
+			respondWithError(w, http.StatusInternalServerError, "Erro ao gerar o projectUUID")
+			return
+	}
+	// projectUUID, err := uuid.Parse(projectID)
+	// if err != nil {
+	// 		respondWithError(w, http.StatusInternalServerError, "Erro ao gerar o projectUUID")
+	// 		return
+	// }
+	// userUUID, err := uuid.Parse(userID)
+	// if err != nil {
+	// 		respondWithError(w, http.StatusInternalServerError, "Erro ao gerar o projectUUID")
+	// 		return
+	// }
 
-// 	i := findTaskIndex(projectId, taskId)
+	err = api.DB.DeleteTaskById(r.Context(), taskUUID)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Erro ao deletar a tarefa.")
+		return
+	}
 
-// 	if i == -1 {
-// 		respondWithError(w, http.StatusNotFound, "[DeleteTask] Task não encontrada")
-// 		return
-// 	}
-
-// 	tasksDB = tasksDB[:i+copy(tasksDB[i:], tasksDB[i+1:])]
-// 	w.WriteHeader(http.StatusNoContent)
-// }
-
-// func (api *ApiConfig) ListMyTasks(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
-
-// 	userId, ok := r.Context().Value("userId").(string)
-// 	if !ok {
-// 		return
-// 	}
-
-// 	userUUID, err := uuid.Parse(userId)
-// 	if err != nil {
-// 		return	
-// 	}
-
-	
-// }
+	w.WriteHeader(http.StatusNoContent)
+}

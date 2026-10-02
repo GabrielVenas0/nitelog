@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_DB: ${DB_POSTGRES}
+      POSTGRES_DB: ${DB_NAME}
 
     volumes:
       - "./.docker/db-data:/var/lib/postgres/data"

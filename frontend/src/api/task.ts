@@ -18,3 +18,18 @@ export async function CreateTaskApi(
   })
   return response.data
 }
+
+export async function GetCompletedTasks(signal?: AbortSignal): Promise<Task> {
+  const response = await api.get('/completedtasks', { signal })
+  return response.data
+}
+
+export async function GetMyTasks(signal?: AbortSignal): Promise<Task> {
+  const response = await api.get('/mytasks', { signal })
+  return response.data
+}
+
+export async function GetFavoriteTasks(signal?: AbortSignal): Promise<Task> {
+  const response = await api.post<Task>('/favtasks', { signal })
+  return response.data
+}

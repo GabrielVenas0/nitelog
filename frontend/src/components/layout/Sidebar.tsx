@@ -1,5 +1,5 @@
 import { Navlink } from '@/components/ui'
-import { Flame } from 'lucide-react'
+import { Flame, Star } from 'lucide-react'
 
 export const Sidebar = () => {
   return (
@@ -8,6 +8,10 @@ export const Sidebar = () => {
         <Navlink to='/foryou'>
           <Flame className='h-5 w-5' />
           Para você
+        </Navlink>
+        <Navlink to='/projects'>
+          <Star className='h-5 w-5' />
+          Projetos
         </Navlink>
       </nav>
     </aside>

@@ -3,7 +3,9 @@ package handler
 import (
 	// "backend/internal/models"
 	"backend/internal/database"
+	"backend/internal/github"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -68,7 +70,7 @@ func (api *ApiConfig) CreateTask(w http.ResponseWriter, r *http.Request) {
 
 	task, err := api.DB.CreateTask(r.Context(), params)
 	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Erro ao criar o projeto.")
+		respondWithError(w, http.StatusInternalServerError, "Erro ao criar a tarefa.")
 		return
 	}
 
@@ -78,6 +80,17 @@ func (api *ApiConfig) CreateTask(w http.ResponseWriter, r *http.Request) {
 		ProjectID: task.ProjectID.String(),
 		CreatorID: task.CreatorID.UUID.String(),
 	}
+
+	repoName := "nitelog"
+	test := "Testando"
+
+	ghService := github.NewService()
+	issueURL, err := ghService.GitHubTaskSync(repoName, req.Name, test)
+	if err != nil {
+		println("Não foi possível criar a issue no GitHub:", err.Error())
+	}
+
+	fmt.Print(issueURL)
 
 	w.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(w).Encode(res)
@@ -133,4 +146,20 @@ func (api *ApiConfig) ListProjectTasks(w http.ResponseWriter, r *http.Request) {
 
 // 	tasksDB = tasksDB[:i+copy(tasksDB[i:], tasksDB[i+1:])]
 // 	w.WriteHeader(http.StatusNoContent)
+// }
+
+// func (api *ApiConfig) ListMyTasks(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json")
+
+// 	userId, ok := r.Context().Value("userId").(string)
+// 	if !ok {
+// 		return
+// 	}
+
+// 	userUUID, err := uuid.Parse(userId)
+// 	if err != nil {
+// 		return	
+// 	}
+
+	
 // }

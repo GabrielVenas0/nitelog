@@ -1,4 +1,5 @@
 import { useAuth } from '@/hooks/auth'
+import { Projects } from './Projects'
 
 export function ForYou() {
   const { user, isLoading } = useAuth()
@@ -16,9 +17,12 @@ export function ForYou() {
         </div>
 
         <div className='py-4'>
-          <h2 className='text-xl font-semibold text-(--textPrimary)'>
-            Espaços recomendados
+          <h2 className='pb-2 text-xl font-semibold text-(--textPrimary)'>
+            Espaços Recomendados
           </h2>
+          <div className='grid-cols'>
+            <Projects></Projects>
+          </div>
         </div>
 
         <div className='flex gap-2 border-t border-(--border) pt-4 text-[15px] text-(--textSecondary)'>

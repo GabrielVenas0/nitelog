@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { GetExploreProjects } from '@/api'
+import { GetMyProjects } from '@/api'
 import type { Project } from '@/types'
 import { ProjectCard } from '@/components'
 import { isCancel } from 'axios'
@@ -13,7 +13,7 @@ export function Projects() {
     async function loadProjects() {
       setLoading(true)
       try {
-        const projectsData = await GetExploreProjects(controller.signal)
+        const projectsData = await GetMyProjects(controller.signal)
         setProjects(projectsData || [])
       } catch (err) {
         if (isCancel(err)) {
